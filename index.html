@@ -1,0 +1,145 @@
+<!-- <!DOCTYPE html>
+<html>
+   <head>
+      <title>Hello world</title>
+   </head>
+   
+   <script src = "/socket.io/socket.io.js"></script>
+   <script>
+      var socket = io();
+      function setUsername() {
+         socket.emit('setUsername', document.getElementById('name').value);
+      };
+      var user;
+      socket.on('userExists', function(data) {
+         document.getElementById('error-container').innerHTML = data;
+      });
+      socket.on('userSet', function(data) {
+         user = data.username;
+         document.body.innerHTML = '<input type = "text" id = "message">\
+         <button type = "button" name = "button" onclick = "sendMessage()">Send</button>\
+         <div id = "message-container"></div>';
+      });
+      function sendMessage() {
+         var msg = document.getElementById('message').value;
+         if(msg) {
+            socket.emit('msg', {message: msg, user: user});
+         }
+      }
+      function getdata() {
+         var msg = document.getElementById('name1').value;
+         if(msg) {
+            socket.emit('getdata', {message: msg});
+         }
+      }
+      socket.on('newmsg', function(data) {
+         if(user) {
+            document.getElementById('message-container').innerHTML += '<div><b>' + 
+               data.user + '</b>: ' + data.message + '</div>'
+         }
+      })
+   </script>
+   
+   <body>
+      <div id = "error-container"></div>
+      <input id = "name" type = "text" name = "name" value = "" 
+         placeholder = "Enter your name!">
+      <button type = "button" name = "button" onclick = "setUsername()">
+         Let me chat!
+      </button>
+      <input id = "name1" type = "text" name = "name1" value = "" 
+         placeholder = "Enter IP!">
+      <button type = "button" name = "button" onclick = "getdata()">
+         Get data
+      </button>
+   </body>
+</html>
+ -->
+
+
+ <!DOCTYPE html>
+<html>
+   <head>
+      <title>Hello world</title>
+   </head>
+   
+   <script src = "/socket.io/socket.io.js"></script>
+   <script>
+      var socket = io();
+      function api_connectet() {
+         socket.emit('api-connectet', document.getElementById('name').value);
+      };
+      var user;
+      socket.on('userExists', function(data) {
+         document.getElementById('error-container').innerHTML = data;
+      });
+      socket.on('fn-api-connectet', function(data) {
+         user = data.username;
+         document.body.innerHTML = '<input type = "text" id = "message" placeholder = "Enter Db Name">\
+         <button type = "button" name = "button" onclick = "getdata()">Get Db</button>\
+         <button type = "button" name = "Discoonect" onclick = "api_Disconnetc()">Disconnect</button>\
+         <br> <br> <input type = "text" id = "DbMame" placeholder = "Enter Db Name1">\
+         <input type = "text" id = "DbData" placeholder = "Enter Db Data">\
+         <button type = "button" name = "button" onclick = "setdata()">Set Db</button>\
+         <div id = "message-container"></div>';
+      });
+      function sendMessage() {
+         var msg = document.getElementById('message').value;
+         if(msg) {
+            socket.emit('msg', {message: msg, user: user});
+         }
+      }
+      function getdata() {
+         var msg = document.getElementById('message').value;
+         if(msg) {
+            document.body.innerHTML = '<input type = "text" id = "message" placeholder = "Enter Db Name">\
+            <button type = "button" name = "button" onclick = "getdata()">Get Db</button>\
+            <button type = "button" name = "Discoonect" onclick = "api_Disconnetc()">Disconnect</button>\
+            <br> <br> <input type = "text" id = "DbMame" placeholder = "Enter Db Name">\
+            <input type = "text" id = "DbData" placeholder = "Enter Db Data">\
+            <button type = "button" name = "button" onclick = "setdata()">Set Db</button>\
+            <div id = "message-container"></div>';
+            socket.emit('api-getdata',msg);
+         }
+      }
+      function setdata() {
+         var dbname = document.getElementById('DbMame').value;
+         var msg = document.getElementById('DbData').value;
+         //var msg = {tableName:dbname,data:data};
+         //var msg = data;
+         if(msg) {
+            document.body.innerHTML = '<input type = "text" id = "message" placeholder = "Enter Db Name">\
+            <button type = "button" name = "button" onclick = "getdata()">Get Db</button>\
+            <button type = "button" name = "Discoonect" onclick = "api_Disconnetc()">Disconnect</button>\
+            <br> <br> <input type = "text" id = "DbMame" placeholder = "Enter Db Name">\
+            <input type = "text" id = "DbData" placeholder = "Enter Db Data">\
+            <button type = "button" name = "button" onclick = "setdata()">Set Db</button>\
+            <div id = "message-container"></div>';
+            socket.emit('api-setdata', msg);
+         }
+      }
+      function api_Disconnetc() {
+         socket.emit('api-disconnetc', {message: 'Discoonect'});
+         document.body.innerHTML = '<input type = "text" id = "name">\
+         <button type = "button" name = "button" onclick = "api_connectet()">Connect</button>\
+         <div id = "message-container"></div>';
+      }
+      socket.on('newmsg', function(data) {
+         if(user) {
+            document.getElementById('message-container').innerHTML += '<div><b>' + 
+               data.user + '</b>: ' + data.message + '</div>'
+         }
+      })
+      socket.on('fn-api-getdata', function(data) {
+         document.getElementById('message-container').innerHTML += '<div><b>' + 
+            data.tableName + '</b>: ' + JSON.stringify(data, null, 2) + '</div>'
+
+      })
+   </script>
+   
+   <body>
+      <div id = "error-container"></div>
+      <input id = "name" type = "text" name = "name" value = "" placeholder = "Enter IP Branch">
+      <button type = "button" name = "button" onclick = "api_connectet()">Connect</button>
+   </body>
+</html>
