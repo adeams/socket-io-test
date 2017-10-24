@@ -12,12 +12,12 @@ example ['configs','dbtest']
 
 data return = obj data [{tableName: Name, data: [{},{}]}]
 
-#function Set database
+# function Set database
 datain = obj data [{tableName: Name, data: [{},{}]}]
 
 return done...
 
-#web url http://ip:3001
+# web url http://ip:3001
 enter ip address socket-io server 
 
 Get data enter Name database ['configs','dbtest']
