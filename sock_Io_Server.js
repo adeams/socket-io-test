@@ -195,6 +195,191 @@ function fromBrowser(req, res)  {
   }  
 }
 
+var isDate = function(date) {
+    return (new Date(date) !== "Invalid Date" && !isNaN(new Date(date)) )  ? true : false;
+}
+
+// var isValidDate = function (s) {
+//     var status = false;
+//     var bits = [];
+//     if (s && s.length >= 6) {
+//         if (s.indexOf(".") > -1) {
+//             bits = s.split(".");
+//             if(bits.length == 2){
+//               if(bits[1].length == 4){
+//                 console.log(bits[1].substring (3)); 
+//                 if(bits[1].substring (3) ==='Z'){
+//                   status = true;  
+//                 }
+//               }
+//             }
+//             console.log(bits[0]);
+//             console.log(bits[1]);
+//         }
+//     } 
+//     return status;
+// }
+
+//'2016-07-08T17:13:27.781Z'
+//'2015-03-25T12:00:00-06:30'
+//'Wed Mar 25 2015 07:00:00 GMT+0700'
+//'Wed Mar 25 2015 07:00:00 GMT+0700 (SE Asia Standard Time)'
+var isValidDate = function (s) {
+    if (s && s.length >= 24) {
+      if(s.indexOf("-") > -1){
+        var bits = s.split("-");
+        //console.log('ex1',bits.length);
+        if(bits.length == 3 ){
+          //console.log(bits[2]);
+          if(bits[2].length == 16){
+            //console.log(bits[2].substring (2,3)); 
+            if((bits[2].substring (2,3) ==='T') && (bits[2].substring (11,12) ==='.') && (bits[2].substring (15) ==='Z')){
+              return true;
+            }
+          }
+        }
+      }
+    } 
+
+    if (s && s.length >= 25) {
+      if(s.indexOf("-") > -1){
+        var bits = s.split("-");
+        //console.log('ex2',bits.length);
+        if(bits.length == 4 ){
+          //console.log(bits[2]);
+          if(bits[2].length == 11){
+            //console.log(bits[2].substring (2,3)); 
+            if((bits[2].substring (2,3) ==='T') && (bits[2].substring (5,6) ===':') && (bits[2].substring (8,9) ===':')){
+              return true;
+            }
+          }
+        }
+      }
+    } 
+
+    if (s && s.length >= 32) {
+      if(s.indexOf(" ") > -1){
+        var bits = s.split(" ");
+        //console.log('ex3',bits.length);
+        if(bits.length >= 5 ){
+          //console.log(bits[5]);
+          if(bits[4].length == 8 && bits[5].length == 8){
+            //console.log(bits[5].substring (0,4)); 
+            if( (bits[4].substring (2,3) === ':') && (bits[4].substring (5,6) === ':') && (bits[5].substring (0,4) ==='GMT+') ){
+              return true;
+            }
+          }
+        }
+      }
+    } 
+
+    return false;
+}
+
+// function chengDateTime(dataIn,callback){
+//   var obj_out = {}
+//   Object.keys(dataIn).forEach(function(key) {
+//       console.log(key, dataIn[key]);
+//       console.log('isValidDate ->',isValidDate(dataIn[key]));
+//       if(isValidDate(dataIn[key])){
+//         var date = new Date(dataIn[key]);
+//  //       console.log(date instanceof Date);
+// //        console.log('isDate1 ->',isDate1(dataIn[key]));
+//         obj_out[key] = date;
+//       }else{
+//         obj_out[key] = dataIn[key];
+//       }
+
+//   });
+//   callback(obj_out);
+// }
+
+function chengDateTime(dataIn,callback){
+  //var Type = require('type-of-is');
+  var obj_out = {}
+  Object.keys(dataIn).forEach(function(key) {
+      console.log(key, dataIn[key]);
+      if(key == '_id') { 
+        obj_out[key] = dataIn[key];
+        console.log('data = _id');
+        return; 
+      }
+      //console.log('isDate ->',isDate(dataIn[key]));
+      console.log('isValidDate ->',isValidDate(dataIn[key]));
+      //if(isDate(dataIn[key])){
+      if(isValidDate(dataIn[key])){
+        var date = new Date(dataIn[key]);
+        console.log(date instanceof Date);
+        obj_out[key] = date;
+      }else{
+         switch(typeof dataIn[key]){
+          case 'object':
+            obj_out[key] = dataIn[key];
+            var obj_outSp1 = obj_out[key];
+            var dataSp1 = dataIn[key];
+            Object.keys(dataSp1).forEach(function(keySp1) {
+              console.log(keySp1, dataSp1[keySp1]);
+              console.log('isValidDate Sp1 ->',isValidDate(dataSp1[keySp1])); 
+              if(isValidDate(dataSp1[keySp1])){
+                var dateSp1 = new Date(dataSp1[keySp1]);
+                console.log(dateSp1 instanceof Date);
+                obj_outSp1[keySp1] = dateSp1;
+            }else{
+              switch(typeof dataSp1[keySp1]){
+                  case 'object':
+                    obj_outSp1[keySp1] = dataSp1[keySp1];
+                    var obj_outSp2 = obj_outSp1[keySp1];
+                    var dataSp2 = dataSp1[keySp1];
+                    Object.keys(dataSp2).forEach(function(keySp2) {
+                      console.log(keySp2, dataSp2[keySp2]);
+                      console.log('isValidDate Sp2 ->',isValidDate(dataSp2[keySp2])); 
+                      if(isValidDate(dataSp2[keySp2])){
+                        var dateSp2 = new Date(dataSp2[keySp2]);
+                        console.log(dateSp2 instanceof Date);
+                        obj_outSp2[keySp2] = dateSp2;
+                    }else{
+                      switch(typeof dataSp2[keySp2]){
+                          case 'object':
+                            obj_outSp2[keySp2] = dataSp2[keySp2];
+                            var obj_outSp3 = obj_outSp2[keySp2];
+                            var dataSp3 = dataSp2[keySp2];
+                            Object.keys(dataSp3).forEach(function(keySp3) {
+                              console.log(keySp3, dataSp3[keySp3]);
+                              console.log('isValidDate Sp3 ->',isValidDate(dataSp3[keySp3])); 
+                              if(isValidDate(dataSp3[keySp3])){
+                                var dateSp3 = new Date(dataSp3[keySp3]);
+                                console.log(dateSp3 instanceof Date);
+                                obj_outSp3[keySp3] = dateSp3;
+                            }else{
+                              obj_outSp3[keySp3] = dataSp3[keySp3];
+                            }
+                            }); 
+                          break;
+                          default:
+                            obj_outSp2[keySp2] = dataSp2[keySp2];
+                          break;
+                        }
+
+                    }
+                    }); 
+                  break;
+                  default:
+                    obj_outSp1[keySp1] = dataSp1[keySp1];
+                  break;
+                }
+            }
+            }); 
+          break;
+          default:
+            obj_out[key] = dataIn[key];
+          break;
+         }
+        console.log('Type -> ',(typeof dataIn[key]));
+      }
+  });
+  callback(obj_out);
+}
+
 //===== Socket IO server =====//
 //var port = 9001;
 var io = require('socket.io');
@@ -267,10 +452,52 @@ ns.on('connection', function (sockAPI) {
     //console.log('Server-Socket.io already close for :', bC, '->',clientSock.length);
   });
 
+  sockAPI.on('api-command-line', function (dataCmd, fn) {
+    var exec = require('child_process').exec;
+    if(dataCmd == 'sudo reboot' || dataCmd == 'sudo poweroff' || dataCmd == 'sudo shutdown now' || dataCmd == 'sudo shutdown -h now'){
+      console.log('err -> ', null, 'stdout -> done');
+      fn(null, {cmd : dataCmd, stdout:'done'}); // success
+    }
+    exec (dataCmd, function (err, stdout, stderr)  {
+      console.log('err -> ',err, 'stdout ->',stdout);
+      fn(err, {cmd : dataCmd, stdout:stdout}); // success
+    });
+  });
+
+  sockAPI.on('api-resetQ', function (fn) {
+    var exec = require('child_process').exec;
+    loadConfig(dbx, function (err, item) {
+      if(!err){
+        var lastDate = new Date(item.lastDate);
+        console.log('lastDate 1 ->',lastDate);
+        lastDate = lastDate.setDate(lastDate.getDate()-1);
+        item.lastDate = new Date(lastDate)
+        console.log('item.lastDate ->',item.lastDate);
+        
+        dbFindUpdate (dbx, 'configs', {_id: item._id}, item, function (err, cnf) {
+          if(!err){  
+              exec ('sudo reboot', function (err, stdout, stderr)  {
+                if(!err){
+                  console.log('err -> ',err, 'stdout ->',stdout);
+                  fn(null, {err:null,msg:'done'}); // success
+                }else{
+                  fn(err,{err:3,msg:'exec sudo reboot'}); // err      
+                }
+              });
+          }else{
+            fn(err,{err:2,msg:'dbFindUpdate configs'}); // err    
+          }
+        });
+      }else{
+        fn(err,{err:1,msg:'loadConfig'}); // err  
+      }
+    }); 
+  });
+
   sockAPI.on('api-get-table', function (tableName, fn) {
       console.log('Read tables ->', tableName);
       var table = [];
-      var statusReadTable = 0;
+      var statusReadTable = null;
       var async = require('async');  
       var q = async.queue(function (item, callback) {
         // console.log('Read table ->', item);
@@ -297,7 +524,8 @@ ns.on('connection', function (sockAPI) {
     // Save table
     sockAPI.on('api-set-table', function (dataIn, fn) {
        console.log('Write table ->0', dataIn);
-      var statusWriteTable = 0;
+      var statusWriteTable = null;
+      var table = [];
       var async = require('async');  
       var q = async.queue(function (item, callback) {
         dbx.collection(item.tableName).drop(function (err) {
@@ -310,23 +538,34 @@ ns.on('connection', function (sockAPI) {
             // else  var objId = new ObjectID(obj._id);
             var objId = new ObjectID();
             obj._id = objId;
-            //console.log('Write table ->', item.tableName, objId, obj);
-            dbx.collection(item.tableName).update({_id: objId}, {"$set": obj}, { upsert: true },function (err, res)  {
-              if(!err){
-                if (++n >= count)  {
-                  callback(err);          
+            //console.log(obj);
+
+            chengDateTime(obj,function (obj_out){
+
+              console.log('obj_out -> ',obj_out);
+              //console.log('Write table ->', item.tableName, objId, obj);
+              dbx.collection(item.tableName).update({_id: objId}, {"$set": obj_out}, { upsert: true },function (err, res)  {
+                if(!err){
+                  console.log('n ->',n,' err ->',err);
+                  if (++n >= count)  {
+                    //var data = [];
+                    //data.push({status:'done'});
+                    table.push({tableName: item.tableName, data: [{status:'done'}]});
+                    callback(err);          
+                  }
+                }else{
+                   console.log('n ->',n,' err ->',err);
+                  n = count + 1;
+                  callback(err); 
                 }
-              }else{
-                n = count + 1;
-                callback(err); 
-              }
+              });
             });
           } 
         });
       });
       q.drain = function() {
         restartFlag = 1;  
-        fn(statusWriteTable, 'Set config done...', conf.branch.branchID); // success
+        fn(statusWriteTable, table , conf.branch.branchID); // success
         //emitter.emit('client-start', 'restart');
       }
       if (dataIn.length)  {

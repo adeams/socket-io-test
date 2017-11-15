@@ -41,7 +41,7 @@ io.on('connection', function(socket) {
    socket.on('msg', function(data) {
       //Send message to everyone
       io.sockets.emit('newmsg', data);
-   })
+   });
 
    socket.on('api-getdata', function(dataIn) {
       console.log('datain ->',dataIn);
@@ -58,7 +58,7 @@ io.on('connection', function(socket) {
             });
          });
       }
-   })
+   });
 
    socket.on('api-setdata', function(dataIn) {
       //console.log('datain ->',dataIn);
@@ -71,7 +71,29 @@ io.on('connection', function(socket) {
             //console.log('data.data ->',JSON.stringify(data[0].data[0], null, 2));
          });
       }
-   })
+   });
+
+   socket.on('api-reboot', function(dataIn) {
+      console.log('datain ->',dataIn);
+      if(clientSock){
+         //console.log('data_set.tableName ->',data_set[0].tableName);
+         clientSock.emit('api-command-line',dataIn, function (err, data) {  
+            console.log('data ->',data);
+            //console.log('data.data ->',JSON.stringify(data[0].data[0], null, 2));
+         });
+      }
+   });
+
+   socket.on('api-resetq', function(){
+      console.log('api-resetq');
+      if(clientSock){
+         //console.log('data_set.tableName ->',data_set[0].tableName);
+         clientSock.emit('api-resetQ', function (err, data) {  
+            console.log('data ->',data);
+            //console.log('data.data ->',JSON.stringify(data[0].data[0], null, 2));
+         });
+      }
+   });
 
 
    socket.on('api-disconnetc', function(data) {

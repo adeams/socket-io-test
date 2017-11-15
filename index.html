@@ -78,9 +78,12 @@
          document.body.innerHTML = '<input type = "text" id = "message" placeholder = "Enter Db Name">\
          <button type = "button" name = "button" onclick = "getdata()">Get Db</button>\
          <button type = "button" name = "Discoonect" onclick = "api_Disconnetc()">Disconnect</button>\
-         <br> <br> <input type = "text" id = "DbMame" placeholder = "Enter Db Name1">\
+         <br> <br> <input type = "text" id = "DbMame" placeholder = "Enter Db Name">\
          <input type = "text" id = "DbData" placeholder = "Enter Db Data">\
          <button type = "button" name = "button" onclick = "setdata()">Set Db</button>\
+         <br> <br> <input type = "text" id = "cmdLine" placeholder = "command-Line">\
+         <button type = "button" name = "button" onclick = "SendCmd()">Send cmd</button>\
+         <br> <br> <button type = "button" name = "button" onclick = "ResetQ()">ResetQ</button>\
          <div id = "message-container"></div>';
       });
       function sendMessage() {
@@ -98,6 +101,9 @@
             <br> <br> <input type = "text" id = "DbMame" placeholder = "Enter Db Name">\
             <input type = "text" id = "DbData" placeholder = "Enter Db Data">\
             <button type = "button" name = "button" onclick = "setdata()">Set Db</button>\
+            <br> <br> <input type = "text" id = "cmdLine" placeholder = "command-Line">\
+            <button type = "button" name = "button" onclick = "SendCmd()">Send cmd</button>\
+            <br> <br> <button type = "button" name = "button" onclick = "ResetQ()">ResetQ</button>\
             <div id = "message-container"></div>';
             socket.emit('api-getdata',msg);
          }
@@ -114,9 +120,41 @@
             <br> <br> <input type = "text" id = "DbMame" placeholder = "Enter Db Name">\
             <input type = "text" id = "DbData" placeholder = "Enter Db Data">\
             <button type = "button" name = "button" onclick = "setdata()">Set Db</button>\
+            <br> <br> <input type = "text" id = "cmdLine" placeholder = "command-Line">\
+            <button type = "button" name = "button" onclick = "SendCmd()">Send cmd</button>\
+            <br> <br> <button type = "button" name = "button" onclick = "ResetQ()">ResetQ</button>\
             <div id = "message-container"></div>';
             socket.emit('api-setdata', msg);
          }
+      }
+      function SendCmd() {
+         var msg = document.getElementById('cmdLine').value;
+         if(msg) {
+            document.body.innerHTML = '<input type = "text" id = "message" placeholder = "Enter Db Name">\
+            <button type = "button" name = "button" onclick = "getdata()">Get Db</button>\
+            <button type = "button" name = "Discoonect" onclick = "api_Disconnetc()">Disconnect</button>\
+            <br> <br> <input type = "text" id = "DbMame" placeholder = "Enter Db Name">\
+            <input type = "text" id = "DbData" placeholder = "Enter Db Data">\
+            <button type = "button" name = "button" onclick = "setdata()">Set Db</button>\
+            <br> <br> <input type = "text" id = "cmdLine" placeholder = "command-Line">\
+            <button type = "button" name = "button" onclick = "SendCmd()">Send cmd</button>\
+            <br> <br> <button type = "button" name = "button" onclick = "ResetQ()">ResetQ</button>\
+            <div id = "message-container"></div>';
+            socket.emit('api-reboot',msg);
+         }
+      }
+      function ResetQ() {
+            document.body.innerHTML = '<input type = "text" id = "message" placeholder = "Enter Db Name">\
+            <button type = "button" name = "button" onclick = "getdata()">Get Db</button>\
+            <button type = "button" name = "Discoonect" onclick = "api_Disconnetc()">Disconnect</button>\
+            <br> <br> <input type = "text" id = "DbMame" placeholder = "Enter Db Name">\
+            <input type = "text" id = "DbData" placeholder = "Enter Db Data">\
+            <button type = "button" name = "button" onclick = "setdata()">Set Db</button>\
+            <br> <br> <input type = "text" id = "cmdLine" placeholder = "command-Line">\
+            <button type = "button" name = "button" onclick = "SendCmd()">Send cmd</button>\
+            <br> <br> <button type = "button" name = "button" onclick = "ResetQ()">ResetQ</button>\
+            <div id = "message-container"></div>';
+            socket.emit('api-resetq');
       }
       function api_Disconnetc() {
          socket.emit('api-disconnetc', {message: 'Discoonect'});
